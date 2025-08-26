@@ -12,6 +12,10 @@ import { CategoryModule } from './category/category.module';
 import { Category } from './category/entities/category.entity';
 import { ProductModule } from './product/product.module';
 import { Product } from './product/entities/product.entity';
+import { ProductLabelModule } from './product_label/product_label.module';
+import { ProductLabel } from './product_label/entities/product_label.entity';
+import { ProductColorModule } from './product_color/product_color.module';
+import { ProductColor } from './product_color/entities/product_color.entity';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -21,13 +25,13 @@ import { Product } from './product/entities/product.entity';
     username:'sa',
     password:'alshahoriar123@@',
     database:'ecommerce',
-    entities:[UsersRole,Users,Brand,Category,Product],
+    entities:[UsersRole,Users,Brand,Category,Product,ProductLabel,ProductColor],
     synchronize:true,
     options: {
         encrypt: true,
         trustServerCertificate: true,
       }
-  }),UsersRoleModule,UsersModule, BrandModule, CategoryModule, ProductModule],
+  }),UsersRoleModule,UsersModule, BrandModule, CategoryModule, ProductModule, ProductLabelModule, ProductColorModule],
   controllers: [AppController],
   providers: [AppService],
 })

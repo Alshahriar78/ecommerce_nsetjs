@@ -58,12 +58,10 @@ export class UsersController {
                 Create_User_Data: getUser
             };
         } catch (error) {
-            throw new HttpException({
-                status: HttpStatus.NOT_FOUND,
-                error: `Users With ${id} is Not in the server`,
-            }, HttpStatus.NOT_FOUND, {
-                cause: error
-            });
+           return {
+                success: false,
+                message: error.message,
+            }
         }
     }
 

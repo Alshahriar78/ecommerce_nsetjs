@@ -19,19 +19,22 @@ export class ProductService {
     return this.productRepository.save(data);
   }
 
-  findAll() {
-    return `This action returns all product`;
+  async findAll() {
+    return await this.productRepository.find() ;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: number) {
+    return await this.productRepository.findOneBy({id});
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    const find:any = await this.findOne(id);
+    const data =  this.productRepository.merge(find,updateProductDto)
+    return this.productRepository.save(data)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: number) {
+      const find:any = await this.findOne(id);
+    return this.productRepository.remove(find);
   }
 }
