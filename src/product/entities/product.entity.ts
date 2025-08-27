@@ -1,8 +1,10 @@
 import { Brand } from "src/brand/entities/brand.entity";
 import { Category } from "src/category/entities/category.entity";
+import { OrdersItem } from "src/orders_item/entities/orders_item.entity";
 import { ProductColor } from "src/product_color/entities/product_color.entity";
+import { ProductImage } from "src/product_image/entities/product_image.entity";
 import { ProductLabel } from "src/product_label/entities/product_label.entity";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity()
@@ -41,4 +43,10 @@ export class Product {
 
   @OneToMany(() => ProductColor, (color) => color.product)
   colors: ProductColor[];
+
+  @OneToMany(()=>ProductImage, (image)=>image.product)
+  images: ProductColor[];
+
+  @OneToMany(()=>OrdersItem,(orderItem)=>orderItem.product)
+  orders_items : OrdersItem[];
 }

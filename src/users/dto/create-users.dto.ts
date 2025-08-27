@@ -1,4 +1,5 @@
 import { IsString, IsEmail, IsBoolean, IsOptional, IsDate, IsArray } from '@nestjs/class-validator';
+import { IsNumber } from 'class-validator';
 import { UsersRole } from 'src/users_role/entities/users_role.entity';
 
 
@@ -22,7 +23,7 @@ export class CreateUsersDto {
   is_active: boolean;
 
 
-  @IsArray()
+  @IsNumber()
   @IsOptional()
-  userRole: UsersRole[];
+  role: UsersRole;
 }
