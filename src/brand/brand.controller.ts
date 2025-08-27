@@ -3,6 +3,7 @@ import { BrandService } from './brand.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { error } from 'console';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('brand')
 export class BrandController {
@@ -10,61 +11,18 @@ export class BrandController {
 
   @Post()
   async create(@Body() createBrandDto: CreateBrandDto) {
-    try {
-      const createBrandData = await this.brandService.create(createBrandDto);
-      return {
-
-        success: true,
-        message: `Brand Created By Admin Successfully`,
-        Create_Brand_Data: createBrandData
-
-      }
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      }
-    }
-
+    return await this.brandService.create(createBrandDto);
   }
 
+  @Public()
   @Get()
   async findAll() {
-    try {
-      const getAllBrandData = await this.brandService.findAll();
-      return {
-
-        success: true,
-        message: `Get All Brand  By Admin Successfully`,
-        Get_All_Brand_Data: getAllBrandData
-
-      }
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      }
-    }
-
+    return await this.brandService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    try {
-      const getBrnadById = await this.brandService.findOne(+id);
-      return {
-        success: true,
-        message: `Get  Brand id ${id}- By Admin Successfully`,
-        Get_Brand_Data: getBrnadById
-
-      }
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      }
-    }
-
+    return  await this.brandService.findOne(+id);
   }
 
   @Patch(':id')

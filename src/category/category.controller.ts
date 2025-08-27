@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('category')
 export class CategoryController {
@@ -27,23 +28,10 @@ export class CategoryController {
     }
   }
 
+  @Public()
   @Get()
   async findAll() {
-    try {
-      const getAll = await this.categoryService.findAll();
-      return {
-        success: true,
-        message: `Get All Category  By Admin Successfully`,
-        Get_All_Category_Data:getAll
-
-      }
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      }
-    }
-    
+   return await this.categoryService.findAll();
   }
 
   @Get(':id')

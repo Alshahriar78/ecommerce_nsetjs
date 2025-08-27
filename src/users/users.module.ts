@@ -8,6 +8,6 @@ import { UsersService } from "./users.service";
     imports:[TypeOrmModule.forFeature([Users])],
     controllers:[UsersController],
     providers:[UsersService],
-    exports:[UsersService]
+    exports:[UsersService, TypeOrmModule]
 })
 export class UsersModule{}
