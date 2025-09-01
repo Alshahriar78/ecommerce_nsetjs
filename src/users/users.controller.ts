@@ -9,8 +9,7 @@ export class UsersController {
 
     constructor(private readonly usersService: UsersService) { }
 
-
-
+    
     @Post()
     async createUser(@Body() createUsersDto: CreateUsersDto, @Res({ passthrough: true }) res: Response) {
         try {
@@ -49,20 +48,7 @@ export class UsersController {
 
     @Get(':id')
     async getUserById(@Param('id') id: number) {
-        try {
-            
-            const getUser = await this.usersService.getUsersById(+id);
-            return {
-                success: true,
-                message: `Get User By ${id} Successfully`,
-                Create_User_Data: getUser
-            };
-        } catch (error) {
-           return {
-                success: false,
-                message: error.message,
-            }
-        }
+        return await this.usersService.getUsersById(id)
     }
 
     @Patch(':id')

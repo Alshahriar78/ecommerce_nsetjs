@@ -15,16 +15,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     JwtModule.register({
       global:true,
       secret:jwtConstants.secret,
-      signOptions:{expiresIn:'10m'},
+      signOptions:{expiresIn:'1h'},
     })
   ],
   controllers: [AuthController],
   providers: [
     AuthService,
-    {
-      provide:APP_GUARD,
-      useClass:AuthGuard
-    }
+    // {
+    //   provide:APP_GUARD,
+    //   useClass:AuthGuard
+    // }
 
   
   ],

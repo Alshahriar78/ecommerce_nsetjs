@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -6,12 +6,13 @@ import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { ProductSeachDto } from './dto/product-search.dto';
 @UseGuards(AuthGuard,RolesGuard)
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) { }
 
-  @Roles('ADMIN')
+  @Roles('ADMIN','CUSTOMER')
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
     return await this.productService.create(createProductDto);
@@ -19,8 +20,12 @@ export class ProductController {
 
   @Public()
   @Get()
-  async findAll() {
-      return await this.productService.findAll();
+  async findAll(@Query() productSeachDto?: ProductSeachDto) {
+      return await this.productService.findAll(
+        productSeachDto?.name,
+        productSeachDto?.limit,
+        productSeachDto?.skip,
+        productSeachDto?.brand );
   }
 
   @Public()
@@ -61,6 +66,6 @@ export class ProductController {
         message: error.message,
       }
     }
-     
   }
+
 }

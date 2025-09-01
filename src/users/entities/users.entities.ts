@@ -1,6 +1,6 @@
 import { Order } from "src/orders/entities/order.entity";
 import { UsersRole } from "src/users_role/entities/users_role.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Users {
@@ -32,7 +32,7 @@ export class Users {
     @UpdateDateColumn()
     updated_at: Date;
 
-    @OneToOne(() => UsersRole, (role) => role.user)
+    @ManyToOne(() => UsersRole, (role) => role.user)
     @JoinColumn()
     role: UsersRole;
 

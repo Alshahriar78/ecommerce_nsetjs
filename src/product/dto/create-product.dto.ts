@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Min } from 'class-validator';
 import { Brand } from 'src/brand/entities/brand.entity';
 import { Category } from 'src/category/entities/category.entity';
 
@@ -27,3 +28,9 @@ export class CreateProductDto {
   @IsNumber()
   category: Category;
 }
+
+
+
+
+
+

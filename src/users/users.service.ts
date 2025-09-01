@@ -23,8 +23,11 @@ export class UsersService {
     }
 
     async getUsersById(id:number){
-        console.log(typeof id)
-        return await this.usersRepository.findOneBy({id})
+        const user  = await this.usersRepository.createQueryBuilder('user')
+        .leftJoinAndSelect('user.role','role')
+        .where('user.id = :id',{id:id})
+        .getOneOrFail()
+        return user;
     }
 
     async updateUsersById(id:number, updateUsersDto:UpdateUsersDto){

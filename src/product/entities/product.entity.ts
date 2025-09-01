@@ -30,7 +30,7 @@ export class Product {
   @Column({ type: 'date', default: () => 'GETDATE()' })
   updated_at: Date;
 
-  @ManyToOne(() => Brand)
+  @ManyToOne(() => Brand,(brand)=>brand.product)
   @JoinColumn({ name: 'brand_id' })
   brand: Brand;
 
