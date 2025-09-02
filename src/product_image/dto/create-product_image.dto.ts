@@ -1,11 +1,16 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Product } from "src/product/entities/product.entity";
+
 
 export class CreateProductImageDto {
 
     @IsString()
-    url:string;
+    path: string;
 
+    @IsString()
+    filename: string;
+
+    @IsNotEmpty()
     @IsNumber()
-    product:Product;
+    product: Product;
 }

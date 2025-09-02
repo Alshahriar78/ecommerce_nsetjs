@@ -7,25 +7,26 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { ProductSeachDto } from './dto/product-search.dto';
-@UseGuards(AuthGuard,RolesGuard)
+// @UseGuards(AuthGuard, RolesGuard)
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) { }
 
-  @Roles('ADMIN','CUSTOMER')
+  // @Roles('ADMIN', 'CUSTOMER')
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
+    console.log(createProductDto)
     return await this.productService.create(createProductDto);
   }
 
   @Public()
   @Get()
   async findAll(@Query() productSeachDto?: ProductSeachDto) {
-      return await this.productService.findAll(
-        productSeachDto?.name,
-        productSeachDto?.limit,
-        productSeachDto?.skip,
-        productSeachDto?.brand );
+    return await this.productService.findAll(
+      productSeachDto?.name,
+      productSeachDto?.limit,
+      productSeachDto?.skip,
+      productSeachDto?.brand);
   }
 
   @Public()

@@ -48,7 +48,7 @@ export class UsersRoleController {
 
 
     @Get(':id')
-    async findById(@Param('id') id: string, @Res({ passthrough: true }) res: Response) {
+    async findById(@Param('id') id: number, @Res({ passthrough: true }) res: Response) {
 
         try {
             res.status(HttpStatus.OK);
@@ -70,7 +70,7 @@ export class UsersRoleController {
 
 
     @Patch(':id')
-    async updateUserRoleById(@Param('id') id: string,
+    async updateUserRoleById(@Param('id') id: number,
         @Body() updateUsersRoleDto: UpdateUsersRoleDto) {
 
         try {
@@ -92,7 +92,7 @@ export class UsersRoleController {
 
 
     @Delete(':id')
-    async removeProduct(@Param('id') id: string) {
+    async removeProduct(@Param('id') id: number) {
         try {
            const data = await this.usersRoleService.removeUserRole(id);
             return {

@@ -25,5 +25,5 @@ export class CreateUsersDto {
 
   @IsNumber()
   @IsOptional()
-  role: UsersRole;
+  role: number;
 }

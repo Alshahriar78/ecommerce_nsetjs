@@ -6,7 +6,7 @@ import { Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGen
 export class UsersRole{
 
     @PrimaryGeneratedColumn()
-    id:string;
+    id:number;
 
     @Column()
     name:string;

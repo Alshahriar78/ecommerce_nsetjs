@@ -27,18 +27,18 @@ export class UsersRoleService {
 
     }
 
-    async findById(id: string) {
+    async findById(id: number) {
 
         return await this.userRoleRepository.findOneBy({ id })
     }
 
-    async updateUsersRoleById(id: string, updateUsersRoleDto: UpdateUsersRoleDto) {
+    async updateUsersRoleById(id: number, updateUsersRoleDto: UpdateUsersRoleDto) {
         const findUserRole: any = await this.findById(id)
         const userData = this.userRoleRepository.merge(findUserRole, updateUsersRoleDto)
         return await this.userRoleRepository.save(userData)
     }
 
-    async removeUserRole(id: string) {
+    async removeUserRole(id: number) {
        
             const deleteUser: any = await this.findById(id)
             await this.userRoleRepository.remove(deleteUser)

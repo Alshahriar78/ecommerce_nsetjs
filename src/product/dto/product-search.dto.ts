@@ -18,7 +18,6 @@ export class ProductSeachDto {
   skip:number;
 
   @IsOptional()
-  @IsPositive()
   limit: number;
 
 

@@ -16,8 +16,9 @@ export class ProductService {
   ) { }
 
   async create(createProductDto: CreateProductDto) {
-
+    console.log('FROM SERVICE ================================================================',createProductDto)
     const data = this.productRepository.create(createProductDto);
+     console.log('FROM SERVICE ===============================================================DATA',data)
     return this.productRepository.save(data);
   }
 
@@ -78,6 +79,11 @@ export class ProductService {
         ])
         .where("p.id = :id", { id: id }).getRawOne()
     return results;
+  }
+
+
+  async findProduct(id: number) {
+    return await this.productRepository.findOneBy({ id: id })
   }
 
 

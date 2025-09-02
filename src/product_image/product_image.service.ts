@@ -1,23 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductImageDto } from './dto/create-product_image.dto';
-import { UpdateProductImageDto } from './dto/update-product_image.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductImage } from './entities/product_image.entity';
 import { Repository } from 'typeorm';
+import { ProductService } from 'src/product/product.service';
+import { UpdateProductImageDto } from './dto/update-product_image.dto';
 
 @Injectable()
 export class ProductImageService {
 
   constructor(
     @InjectRepository(ProductImage)
-    private readonly imageRepositoy : Repository<ProductImage>
+    private readonly imageRepositoy : Repository<ProductImage>,
+    private readonly productService : ProductService
   ){}
 
 
-  async create(createProductImageDto: CreateProductImageDto) {
-    const data = this.imageRepositoy.create(createProductImageDto)
-    return await this.imageRepositoy.save(data) ;
-  }
+async create(createProductImageDto: CreateProductImageDto) {
+  const newImage = this.imageRepositoy.create({
+    filename: createProductImageDto.filename,
+    path: createProductImageDto.path,
+    product: createProductImageDto.product, 
+  });
+
+  return await this.imageRepositoy.save(newImage);
+}
+
+   
 
   async findAll() {
     return await this.imageRepositoy.find()

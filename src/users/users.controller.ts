@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Res, HttpStatus, Param, HttpException, Patch, Delete } from "@nestjs/common";
+import { Body, Controller, Get, Post, Res, HttpStatus, Param, HttpException, Patch, Delete, Query } from "@nestjs/common";
 import { CreateUsersDto } from "./dto/create-users.dto";
 import { UsersService } from "./users.service";
 import type { Response } from "express";
 import { UpdateUsersDto } from "./dto/update-users.dto";
+import { UserSearchDto } from "./dto/search-users.dto";
 
 @Controller('users')
 export class UsersController {
@@ -12,38 +13,17 @@ export class UsersController {
     
     @Post()
     async createUser(@Body() createUsersDto: CreateUsersDto, @Res({ passthrough: true }) res: Response) {
-        try {
-            const createUser = await this.usersService.createUsers(createUsersDto)
-            res.status(HttpStatus.CREATED)
-            return {
-                success: true,
-                message: `Create  User    Successfully`,
-                Create_User_Data: createUser
-            };
-        } catch (error) {
-            return {
-                success: false,
-                message: error.message,
-            };
-        }
+        
+         return await this.usersService.createUsers(createUsersDto)
     }
 
     @Get()
-    async getAllUser() {
-        try {
-            const getAllUserData = await this.usersService.getAllUsers();
-            return {
-                success: true,
-                message: `Get All  User    Successfully`,
-                Create_User_Data: getAllUserData
-            };
-        } catch (error) {
-            return {
-                success: false,
-                message: error.message,
-            }
-        }
-
+    async getAllUser(@Query()userSeachDto?:UserSearchDto) {
+            return  await this.usersService
+            .getAllUsers(
+                userSeachDto?.name,
+                userSeachDto?.phone
+            );
     }
 
     @Get(':id')
@@ -53,20 +33,7 @@ export class UsersController {
 
     @Patch(':id')
     async updateUserById(@Param('id') id :number, @Body() updateUsersDto: UpdateUsersDto){
-        try {
-            const updateUserData = await this.usersService.updateUsersById(+id,updateUsersDto)
-            return {
-                success: true,
-                message: `Get User By ${id} Successfully`,
-                Create_User_Data: updateUserData
-            };
-
-        } catch (error) {
-            return {
-                success: false,
-                message: error.message,
-            }
-        }
+        const updateUserData = await this.usersService.updateUsersById(id,updateUsersDto)   
     }
 
     @Delete(':id')

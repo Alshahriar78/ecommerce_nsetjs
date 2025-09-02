@@ -1,14 +1,18 @@
 import { Product } from "src/product/entities/product.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
+@Entity('file')
 export class ProductImage {
     @PrimaryGeneratedColumn()
     id:number;
 
     @Column()
-    url:string;
+    filename: string;
+
+    @Column()
+    path:string;
 
     @ManyToOne(()=>Product,(product)=>product.images)
+    @JoinColumn({ name: 'productId' })
     product:Product;
 }
