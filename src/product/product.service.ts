@@ -16,9 +16,7 @@ export class ProductService {
   ) { }
 
   async create(createProductDto: CreateProductDto) {
-    console.log('FROM SERVICE ================================================================',createProductDto)
     const data = this.productRepository.create(createProductDto);
-     console.log('FROM SERVICE ===============================================================DATA',data)
     return this.productRepository.save(data);
   }
 

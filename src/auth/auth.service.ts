@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/users/entities/users.entities';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt' 
 
 @Injectable()
 export class AuthService {
@@ -21,13 +22,16 @@ export class AuthService {
       where: { email },
       relations: ['role'],
     });
-    // Plain text password check
-    if (user && user.password === password) {
-      
-      return user;
+    
+    if(!user){
+      throw new UnauthorizedException('User Not Found')
     }
-
-    return null;
+    const isPasswordValid = await bcrypt.compare(password,user.password);
+    if(!isPasswordValid){
+      throw new UnauthorizedException('Invalid Credentilas!!!')
+    } 
+    const {password:_,...result} = user;
+    return result
   }
 
   async signIn(
@@ -38,8 +42,7 @@ export class AuthService {
       where: { email },
       relations: ['role'],
     });
-    console.log(user)
-    if (user?.password !== password) {
+    if (!user) {
       throw new UnauthorizedException();
     }
     

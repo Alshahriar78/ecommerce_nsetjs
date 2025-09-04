@@ -1,32 +1,32 @@
-import { IsString, IsNumber, IsNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsString, IsNumber, IsNotEmpty, ValidateNested, ArrayMinSize } from 'class-validator';
 import { Users } from 'src/users/entities/users.entities';
+import { OrderItemDto } from './order-item.dto';
 
 export class CreateOrderDto {
-    @IsNotEmpty()
     @IsString()
-    user_name: string;
+    // @IsNotEmpty()
+    userName:string;
+    
+    @IsString()
+    // @IsNotEmpty()
+    phone:string;
 
-    @IsNotEmpty()
-    @IsString()
-    phone: string;
+     @IsString()
+    // @IsNotEmpty()
+    shipingAddress:string;
+    
 
     @IsString()
     note: string;
 
-    @IsNotEmpty()
-    @IsNumber()
-    total_price: number;
-
-    @IsNotEmpty()
-    @IsString()
-    status: string;
-
-    @IsNotEmpty()
-    @IsString()
-    address: string;
 
     @IsNotEmpty()
     @IsNumber()
-    user: Users;
+    userId: number;
+
+    @ValidateNested({each:true})
+    @Type(()=> OrderItemDto)
+    @ArrayMinSize(1)
+    items : OrderItemDto[];
 }
-

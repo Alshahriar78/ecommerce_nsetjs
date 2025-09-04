@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import { CreateUsersDto } from "./dto/create-users.dto";
 import { UpdateUsersDto } from "./dto/update-users.dto";
 import { UsersRole } from "src/users_role/entities/users_role.entity";
+import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class UsersService {
@@ -17,14 +18,16 @@ export class UsersService {
     ) { }
 
     async createUsers(createUsersDto: CreateUsersDto) {
-        const { role: roleEntity, ...userData } = createUsersDto;
+        const { role: roleEntity,password, ...userData } = createUsersDto;
+        const saltRounds = 10;
+        const pass = await bcrypt.hash(password,saltRounds);
         const role = roleEntity
             ? await this.userRoleRepository.findOne({ where: { id: roleEntity } })
             : await this.userRoleRepository.findOne({ where: { id: 3 } });
         if (!role) {
             throw new Error('Default role not found');
         }
-        const createData = this.usersRepository.create({ ...userData, role })
+        const createData = this.usersRepository.create({ ...userData, role,password:pass })
         return await this.usersRepository.save(createData);
     }
 
@@ -63,10 +66,27 @@ export class UsersService {
     }
 
     async getUsersById(id: number) {
-        const user = await this.usersRepository.createQueryBuilder('user')
-            .leftJoinAndSelect('user.role', 'role')
-            .where('user.id = :id', { id: id })
-            .getOneOrFail()
+        const user = await this.usersRepository
+        .createQueryBuilder("user")
+            .leftJoin("user.role", "role")
+            .leftJoin("user.orders", "order")
+            .leftJoin("order.oreder_items", "items")
+            .select(
+                [
+                    "user.id as ID",
+                    "user.name as Name",
+                    "user.email as Email",
+                    "user.phone as Phone",
+                    "user.address as Address",
+                    "items.name as ProductName",
+                    "order.address ShippingAddress",
+                    "order.created_at as OderDate",
+                    "order.total_price PayableMoney",
+                    "order.status as OrderStatus"
+                ]
+            )
+            .where("user.id = :id",{id: `${id}`})
+            .getRawOne()
         return user;
     }
 

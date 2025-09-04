@@ -36,7 +36,7 @@ export class Users {
     @JoinColumn()
     role: UsersRole;
 
-    @OneToMany(()=>Order,(order)=>order.user)
+    @OneToMany(()=>Order,(order)=>order.user )
     orders:Order[];
 }
 

@@ -22,7 +22,7 @@ export class OrdersItem {
     @Column({ type: 'date', default: () => 'GETDATE()' })
     updated_at: Date;
 
-    @ManyToOne(()=>Order,(order)=>order.oreder_items)
+    @ManyToOne(()=>Order,(order)=>order.oreder_items, {onDelete:"CASCADE"})
     order: Order;
 
     @ManyToOne(()=>Product,(product)=>product.orders_items)

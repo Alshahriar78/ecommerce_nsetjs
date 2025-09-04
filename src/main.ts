@@ -10,9 +10,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist:true,
     forbidNonWhitelisted:true,
-    transform:true,
+    transform:false,
     transformOptions:{
-      enableImplicitConversion:true
+      enableImplicitConversion:false
     }
   }))
   app.useGlobalFilters(new HttpExceptionFilter())

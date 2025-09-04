@@ -1,6 +1,6 @@
 import { OrdersItem } from "src/orders_item/entities/orders_item.entity";
 import { Users } from "src/users/entities/users.entities";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity()
@@ -8,23 +8,26 @@ export class Order {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    user_name: string;
+    @Column({nullable:true})
+    userName: string;
 
-    @Column()
+    @Column({nullable:true})
     phone: string;
 
-    @Column()
+    @Column({nullable:true})
     note: string;
 
-    @Column()
+    @Column({nullable:true})
     total_price: number;
 
-    @Column()
+    @Column({nullable:true})
     status: string;
 
-    @Column()
+    @Column({nullable:true})
     address: string;
+
+    @Column()
+    userId:number;
 
     @Column({ type: 'date', default: () => 'GETDATE()' })
     created_at: Date;
@@ -32,10 +35,11 @@ export class Order {
     @Column({ type: 'date', default: () => 'GETDATE()' })
     updated_at: Date;
 
-    @ManyToOne(()=>Users,(user)=>user.orders)
-    user:Users;
+    @ManyToOne(() => Users, (user) => user.orders, { onDelete: "CASCADE" })
+    @JoinColumn({name:'userId'})
+    user: Users;
 
-    @OneToMany(()=>OrdersItem,(orederItem)=>orederItem.order)
-    oreder_items :OrdersItem[];
+    @OneToMany(() => OrdersItem, (orederItem) => orederItem.order)
+    oreder_items: OrdersItem[];
 
 }

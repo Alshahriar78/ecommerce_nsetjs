@@ -4,6 +4,7 @@ import { UpdateOrdersItemDto } from './dto/update-orders_item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrdersItem } from './entities/orders_item.entity';
 import { Repository } from 'typeorm';
+import { CreateOrderDto } from 'src/orders/dto/create-order.dto';
 
 @Injectable()
 export class OrdersItemService {
@@ -13,9 +14,10 @@ export class OrdersItemService {
     private readonly orderIremRepository: Repository<OrdersItem>
   ){}
 
-  async create(createOrdersItemDto: CreateOrdersItemDto) {
-    const data  = this.orderIremRepository.create(createOrdersItemDto)
-    return await this.orderIremRepository.save(data) ;
+  async create(createOrderItemWithOrder:CreateOrderDto) {
+    console.log(createOrderItemWithOrder)
+    // const data  = this.orderIremRepository.create(createOrderItemWithOrder)
+    // return await this.orderIremRepository.save(data) ;
   }
 
   async findAll() {

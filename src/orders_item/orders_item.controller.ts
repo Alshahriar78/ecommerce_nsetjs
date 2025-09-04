@@ -10,12 +10,12 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 export class OrdersItemController {
   constructor(private readonly ordersItemService: OrdersItemService) {}
 
-  @UseGuards(AuthGuard,RolesGuard)
-  @Roles('ADMIN','CUSTOMER')
-  @Post()
-  create(@Body() createOrdersItemDto: CreateOrdersItemDto) {
-    return this.ordersItemService.create(createOrdersItemDto);
-  }
+  // @UseGuards(AuthGuard,RolesGuard)
+  // @Roles('ADMIN','CUSTOMER')
+  // @Post()
+  // create() {
+  //   return this.ordersItemService.create(createOrdersItemDto);
+  // }
 
   @Get()
   findAll() {
