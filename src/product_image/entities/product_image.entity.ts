@@ -12,7 +12,7 @@ export class ProductImage {
     @Column()
     path:string;
 
-    @ManyToOne(()=>Product,(product)=>product.images)
-    @JoinColumn({ name: 'productId' })
+    @ManyToOne(()=>Product,(product)=>product.images,{ onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'product_id' })
     product:Product;
 }

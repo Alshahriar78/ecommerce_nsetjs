@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Min } from 'class-validator';
 import { Brand } from 'src/brand/entities/brand.entity';
 import { Category } from 'src/category/entities/category.entity';
+import { IsNull } from 'typeorm';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -20,7 +21,7 @@ export class CreateProductDto {
   @IsString()
   description: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   brand: Brand;
 

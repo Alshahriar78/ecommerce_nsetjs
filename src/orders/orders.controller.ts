@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { ProductSeachDto } from 'src/product/dto/product-search.dto';
+import { OrderSeachDto } from './dto/oder-seach.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -13,13 +15,13 @@ export class OrdersController {
   }
 
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  findAll(@Query()paginationDto?:OrderSeachDto) {
+    return this.ordersService.findAll(paginationDto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ordersService.findOne(+id);
+  findOne(@Param('id') id: number,@Query() paginationDto?:OrderSeachDto) {
+    return this.ordersService.findOne(id, paginationDto);
   }
 
   @Patch(':id')

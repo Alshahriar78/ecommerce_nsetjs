@@ -8,5 +8,6 @@ import { ProductLabel } from './entities/product_label.entity';
   imports:[TypeOrmModule.forFeature([ProductLabel])],
   controllers: [ProductLabelController],
   providers: [ProductLabelService],
+  exports:[TypeOrmModule]
 })
 export class ProductLabelModule {}

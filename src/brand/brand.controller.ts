@@ -1,11 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, UseGuards } from '@nestjs/common';
 import { BrandService } from './brand.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { error } from 'console';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('brand')
+@UseGuards(AuthGuard,RolesGuard)
+@Roles("ADMIN")
 export class BrandController {
   constructor(private readonly brandService: BrandService) { }
 
@@ -14,7 +19,7 @@ export class BrandController {
     return await this.brandService.create(createBrandDto);
   }
 
-  @Public()
+  
   @Get()
   async findAll() {
     return await this.brandService.findAll();

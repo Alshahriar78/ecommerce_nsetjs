@@ -7,12 +7,13 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { ProductSeachDto } from './dto/product-search.dto';
-// @UseGuards(AuthGuard, RolesGuard)
+
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) { }
 
-  // @Roles('ADMIN', 'CUSTOMER')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
     console.log(createProductDto)
@@ -37,36 +38,14 @@ export class ProductController {
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    try {
       const data = this.productService.update(+id, updateProductDto);
-      return {
-        success: true,
-        message: `Get All Product  By Admin Successfully`,
-        Create_User_Data: data
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      }
-    }
+      return data;
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    try {
       const data = this.productService.remove(+id);
-      return {
-        success: true,
-        message: `Get All Product  By Admin Successfully`,
-        Create_User_Data: data
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      }
-    }
+      return data;
   }
 
 }

@@ -23,12 +23,15 @@ export class CreateUsersDto {
   })
   password: string;
 
-  @IsString()
-  @IsPhoneNumber('BD',{message:`Phone Number Must be Valid`})
+  @IsNotEmpty({ message: 'Phone number is required' })
+  @Matches(/^(?:\+8801[3-9]\d{8}|01[3-9]\d{8})$/, {
+    message: 'Phone number must be a valid Bangladeshi number',
+  })
   phone: string;
 
+  @IsOptional()
   @IsString()
-  address: string;
+  address?: string;
 
   @IsBoolean()
   is_active: boolean;

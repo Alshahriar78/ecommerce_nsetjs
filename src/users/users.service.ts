@@ -1,4 +1,4 @@
-import { Injectable, UseGuards } from "@nestjs/common";
+import { Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Users } from "./entities/users.entities";
 import { Repository } from "typeorm";
@@ -18,43 +18,62 @@ export class UsersService {
     ) { }
 
     async createUsers(createUsersDto: CreateUsersDto) {
-        const { role: roleEntity,password, ...userData } = createUsersDto;
+        const { role: roleEntity, password, ...userData } = createUsersDto;
         const saltRounds = 10;
-        const pass = await bcrypt.hash(password,saltRounds);
+        const pass = await bcrypt.hash(password, saltRounds);
         const role = roleEntity
             ? await this.userRoleRepository.findOne({ where: { id: roleEntity } })
             : await this.userRoleRepository.findOne({ where: { id: 3 } });
         if (!role) {
             throw new Error('Default role not found');
         }
-        const createData = this.usersRepository.create({ ...userData, role,password:pass })
+        const createData = this.usersRepository.create({ ...userData, role, password: pass })
         return await this.usersRepository.save(createData);
     }
 
-    @UseGuards()
     async getAllUsers(
         name?: string,
         phone?: string
     ) {
-        const data = await this.usersRepository
+        const data = this.usersRepository
             .createQueryBuilder("user")
             .leftJoin("user.role", "role")
             .leftJoin("user.orders", "order")
             .leftJoin("order.oreder_items", "items")
+            .leftJoin(`items.color`, 'color')
+            .leftJoin(`items.label`, 'label')
             .select(
                 [
+                    //users table
                     "user.id as ID",
                     "user.name as Name",
                     "user.email as Email",
                     "user.phone as Phone",
                     "user.address as Address",
-                    "items.name as ProductName",
-                    "order.address ShippingAddress",
-                    "order.created_at as OderDate",
+
+                    //users_role table
+                    "role.name As role",
+
+                    //order table
+                    "order.id as OrderId",
+                    "order.district as ShippingAddress",
+                    "order.created_at as OrderDate",
                     "order.total_price PayableMoney",
-                    "order.status as OrderStatus"
+                    "order.status as OrderStatus",
+
+                    //orders_item table
+                    "items.name as ProductName",
+                    `items.quantity as Quantity`,
+                    `items.price as ProductPrice`,
+
+                    //product_color table
+                    `color.value as ProductColor`,
+
+                    //product_label table
+                    `label.value as ProductLabel`
                 ]
             )
+
         if (name) {
             data.where("user.name LIKE :name", { name: `%${name}%` })
         }
@@ -62,33 +81,139 @@ export class UsersService {
             data.andWhere("user.phone LIKE :phone", { phone: `%+88${phone}%` })
         }
 
-        return data.getRawMany();
+        const rows = await data.getRawMany();
+        const usersMap = new Map<number, any>();
+        for (const row of rows) {
+            if (!usersMap.has(row.ID)) {
+                usersMap.set(row.ID, {
+                    ID: row.ID,
+                    Name: row.Name,
+                    Email: row.Email,
+                    Phone: row.Phone,
+                    Address: row.Address,
+                    Role: row.role,
+                    orders: [],
+                });
+            }
+
+            const user = usersMap.get(row.ID);
+
+            if (row.OrderId) {
+                let order = user.orders.find(o => o.OrderId === row.OrderId);
+                if (!order) {
+                    order = {
+                        OrderId: row.OrderId,
+                        ShippingAddress: row.ShippingAddress,
+                        OrderDate: row.OrderDate,
+                        PayableMoney: row.PayableMoney,
+                        OrderStatus: row.OrderStatus,
+                        items: [],
+                    };
+                    user.orders.push(order);
+                }
+
+                if (row.ProductName) {
+                    order.items.push({
+                        ProductName: row.ProductName,
+                        Quantity: row.Quantity,
+                        ProductTotalPrice: row.ProductPrice,
+                        Color: row.ProductColor,
+                        Label: row.ProductLabel,
+                    });
+                }
+            }
+        }
+
+        return Array.from(usersMap.values());
     }
 
+
+    // User Get By User Id
     async getUsersById(id: number) {
-        const user = await this.usersRepository
-        .createQueryBuilder("user")
+
+
+        const rows = await this.usersRepository
+            .createQueryBuilder("user")
             .leftJoin("user.role", "role")
             .leftJoin("user.orders", "order")
             .leftJoin("order.oreder_items", "items")
+            .leftJoin(`items.color`, 'color')
+            .leftJoin(`items.label`, 'label')
             .select(
                 [
+                    // users table
                     "user.id as ID",
                     "user.name as Name",
                     "user.email as Email",
                     "user.phone as Phone",
                     "user.address as Address",
-                    "items.name as ProductName",
-                    "order.address ShippingAddress",
-                    "order.created_at as OderDate",
+
+                    //users_role Table
+                    "role.name as role",
+
+                    //order table
+                    "order.id as OrderId",
+                    "order.created_at as OrderDate",
+                    "order.district as ShippingAddress",
                     "order.total_price PayableMoney",
-                    "order.status as OrderStatus"
+                    "order.status as OrderStatus",
+
+                    //orders_item table
+                    "items.name as ProductName",
+                    `items.quantity as Quantity`,
+                    `items.price as ProductPrice`,
+
+                    //product_color table
+                    `color.value as ProductColor`,
+
+                    //product_label table
+                    `label.value as ProductLabel`
+
                 ]
             )
-            .where("user.id = :id",{id: `${id}`})
-            .getRawOne()
+            .where("user.id = :id", { id: `${id}` })
+            .getRawMany();
+
+        if (!rows.length) return `User not Found`;
+
+        const user = {
+            ID: rows[0].ID,
+            Name: rows[0].Name,
+            Email: rows[0].Email,
+            Phone: rows[0].Phone,
+            Role: rows[0].role,
+            Address: rows[0].Address,
+            orders: [] as any[],
+        };
+
+        for (const row of rows) {
+            if (row.OrderId) {
+                let order = user.orders.find(o => o.OrderId === row.OrderId);
+                if (!order) {
+                    order = {
+                        OrderId: row.OrderId,
+                        ShippingAddress: row.ShippingAddress,
+                        OrderDate: row.OrderDate,
+                        PayableMoney: row.PayableMoney,
+                        OrderStatus: row.OrderStatus,
+                        items: [],
+                    };
+                    user.orders.push(order);
+                }
+                if (row.ProductName) {
+                    order.items.push({
+                        ProductName: row.ProductName,
+                        Quantity: row.Quantity,
+                        ProductPrice: row.ProductPrice,
+                        Color: row.ProductColor,
+                        Label: row.ProductLabel,
+                    });
+                }
+            }
+        }
         return user;
     }
+
 
     async updateUsersById(id: number, updateUsersDto: UpdateUsersDto) {
         const findUsers: any = await this.getUsersById(id);
@@ -98,7 +223,10 @@ export class UsersService {
     }
 
     async deleteUsersById(id: number) {
-        const deleteUser: any = await this.getUsersById(id);
+        const deleteUser: any = await this.usersRepository.findBy({ id });
+        if (!deleteUser) {
+            throw new NotFoundException(`User with ID ${id} not found`);
+        }
         await this.usersRepository.remove(deleteUser);
         return deleteUser;
     }

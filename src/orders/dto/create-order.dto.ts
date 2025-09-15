@@ -5,17 +5,17 @@ import { OrderItemDto } from './order-item.dto';
 
 export class CreateOrderDto {
     @IsString()
-    // @IsNotEmpty()
-    userName:string;
-    
-    @IsString()
-    // @IsNotEmpty()
-    phone:string;
+    userName: string;
 
-     @IsString()
-    // @IsNotEmpty()
-    shipingAddress:string;
-    
+    @IsString()
+    phone: string;
+
+    @IsString()
+    district: string;
+
+    @IsString()
+    area: string;
+
 
     @IsString()
     note: string;
@@ -25,8 +25,8 @@ export class CreateOrderDto {
     @IsNumber()
     userId: number;
 
-    @ValidateNested({each:true})
-    @Type(()=> OrderItemDto)
+    @ValidateNested({ each: true })
+    @Type(() => OrderItemDto)
     @ArrayMinSize(1)
-    items : OrderItemDto[];
+    items: OrderItemDto[];
 }

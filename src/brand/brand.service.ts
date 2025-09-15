@@ -14,6 +14,11 @@ export class BrandService {
   ) { }
 
   async create(createBrandDto: CreateBrandDto) {
+    const category = this.brandRepository.createQueryBuilder('b').where('b.name = :name', { name: createBrandDto.name })
+    const data = await category.getOne();
+    if (data) {
+      throw new NotFoundException(`${createBrandDto.name} Category already exists`);
+    }
     const createBrandData = this.brandRepository.create(createBrandDto);
     return await this.brandRepository.save(createBrandData)
   }

@@ -6,6 +6,7 @@ import { UpdateUsersDto } from "./dto/update-users.dto";
 import { UserSearchDto } from "./dto/search-users.dto";
 import { AuthGuard } from "src/auth/auth.guard";
 import { RolesGuard } from "src/auth/roles.guard";
+import { Roles } from "src/auth/decorators/roles.decorator";
 
 @Controller('users')
 export class UsersController {
@@ -20,6 +21,7 @@ export class UsersController {
     }
 
     @UseGuards(AuthGuard,RolesGuard)
+    @Roles('ADMIN')
     @Get()
     async getAllUser(@Query() userSeachDto?: UserSearchDto) {
         return await this.usersService

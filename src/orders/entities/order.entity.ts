@@ -24,7 +24,11 @@ export class Order {
     status: string;
 
     @Column({nullable:true})
-    address: string;
+    district: string;
+
+    @Column({nullable:true})
+    area: string;
+
 
     @Column()
     userId:number;
@@ -39,7 +43,7 @@ export class Order {
     @JoinColumn({name:'userId'})
     user: Users;
 
-    @OneToMany(() => OrdersItem, (orederItem) => orederItem.order)
+    @OneToMany(() => OrdersItem, (orederItem) => orederItem.order,{ cascade: true})
     oreder_items: OrdersItem[];
 
 }

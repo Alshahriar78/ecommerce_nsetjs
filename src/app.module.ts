@@ -23,23 +23,25 @@ import { Order } from './orders/entities/order.entity';
 import { OrdersItemModule } from './orders_item/orders_item.module';
 import { OrdersItem } from './orders_item/entities/orders_item.entity';
 import { AuthModule } from './auth/auth.module';
+import { ProductVariantModule } from './product_variant/product_variant.module';
+import { ProductVariant } from './product_variant/entities/product_variant.entity';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
-    type:'mssql',
-    host: 'SOUROVPC',
+    type: 'mssql',
+    host: `localhost`,
     port: 1433,
-    username:'sa',
-    password:'alshahoriar123@@',
-    database:'ecommerce',
-    entities:[UsersRole,Users,Brand,Category,Product,ProductLabel,ProductColor,ProductImage,Order,OrdersItem],
-    synchronize:true,
+    username: 'sa',
+    password: 'alshahoriar123@',
+    database: 'ecommerce',
+    entities: [UsersRole, Users, Brand, Category, Product, ProductLabel, ProductColor, ProductImage, Order, OrdersItem,ProductVariant],
+    synchronize: true,
     options: {
-        encrypt: true,
-        trustServerCertificate: true,
-      }
-  }),UsersRoleModule,UsersModule, BrandModule, CategoryModule, ProductModule, ProductLabelModule, ProductColorModule, ProductImageModule, OrdersModule, OrdersItemModule, AuthModule],
+      encrypt: false,
+      trustServerCertificate: true,
+    }
+  }), UsersRoleModule, UsersModule, BrandModule, CategoryModule, ProductModule, ProductLabelModule, ProductColorModule, ProductImageModule, OrdersModule, OrdersItemModule, AuthModule, ProductVariantModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

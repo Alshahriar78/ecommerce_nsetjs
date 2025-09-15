@@ -25,7 +25,8 @@ export class UsersRoleController {
 
     @Get(':id')
     async findById(@Param('id') id: number, @Res({ passthrough: true }) res: Response) {
-        const getUserRoleData = await this.usersRoleService.findById(id);
+        let roleId :number = Number(id)
+        const getUserRoleData = await this.usersRoleService.findById(roleId);
         return getUserRoleData
     }
 

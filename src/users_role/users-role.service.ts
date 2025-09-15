@@ -1,4 +1,4 @@
-import { Body, Injectable, Param, Patch } from "@nestjs/common";
+import { Body, Injectable, NotFoundException, Param, Patch } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UsersRole } from "./entities/users_role.entity";
 import { Repository } from "typeorm";
@@ -19,7 +19,7 @@ export class UsersRoleService {
     async createUsersRole(createUsersRoleDto: CreateUsersRoleDto) {
         const data = this.userRoleRepository.create(createUsersRoleDto)
         return await this.userRoleRepository.save(data)
-        
+
     }
 
     async gettAllUsersRole() {
@@ -28,8 +28,10 @@ export class UsersRoleService {
     }
 
     async findById(id: number) {
-
-        return await this.userRoleRepository.findOneBy({ id })
+        console.log(typeof id)
+        const data = this.userRoleRepository.createQueryBuilder('role')
+        .where('role.id = :id', { id })
+        return await data.getRawOne()
     }
 
     async updateUsersRoleById(id: number, updateUsersRoleDto: UpdateUsersRoleDto) {
@@ -38,12 +40,15 @@ export class UsersRoleService {
         return await this.userRoleRepository.save(userData)
     }
 
-    async removeUserRole(id: number) {
-       
-            const deleteUser: any = await this.findById(id)
-            await this.userRoleRepository.remove(deleteUser)
-            return deleteUser;
-        
-    }
+  async removeUserRole(id: number) {
+  const roleId = Number(id);
+  const deleteResult = await this.userRoleRepository.delete(roleId);
+
+  if (deleteResult.affected === 0) {
+    throw new NotFoundException(`Role with id ${id} not found`);
+  }
+
+  return { message: `Role with id ${id} deleted successfully` };
+}
 
 }

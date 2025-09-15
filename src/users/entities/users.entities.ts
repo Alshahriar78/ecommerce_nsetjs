@@ -20,9 +20,9 @@ export class Users {
     @Column()
     phone: string;
 
-    @Column()
-    address: string;
-
+    @Column({ type: 'nvarchar', length: 255, nullable: true })
+    address: string | null;
+    
     @Column()
     is_active: boolean;
 

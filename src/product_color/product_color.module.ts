@@ -8,5 +8,6 @@ import { ProductColor } from './entities/product_color.entity';
   imports:[TypeOrmModule.forFeature([ProductColor])],
   controllers: [ProductColorController],
   providers: [ProductColorService],
+  exports:[TypeOrmModule]
 })
 export class ProductColorModule {}

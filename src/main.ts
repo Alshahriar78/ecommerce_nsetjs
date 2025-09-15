@@ -19,6 +19,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseInterceptor())
   await app.listen(process.env.PORT ?? port);
   console.log(`Nest Server Running On ${port}`)
+
 }
 bootstrap();
                                            

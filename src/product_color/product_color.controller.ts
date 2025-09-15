@@ -1,14 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseFilters } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseFilters, UseGuards } from '@nestjs/common';
 import { ProductColorService } from './product_color.service';
 import { CreateProductColorDto } from './dto/create-product_color.dto';
 import { UpdateProductColorDto } from './dto/update-product_color.dto';
 import { HttpExceptionFilter } from 'src/common/filters/http-exception.filter';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @UseFilters(HttpExceptionFilter)
 @Controller('product-color')
 export class ProductColorController {
   constructor(private readonly productColorService: ProductColorService) {}
 
+  @UseGuards(AuthGuard,RolesGuard)
+  @Roles("ADMIN")
   @Post()
   async create(@Body() createProductColorDto: CreateProductColorDto) {
     return this.productColorService.create(createProductColorDto);
