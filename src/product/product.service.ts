@@ -35,12 +35,15 @@ export class ProductService {
       .leftJoin('pv.color','pc')
       .leftJoin('product.brand','b')
       .leftJoin('product.category','c')
+      .leftJoin('product.images','img')
       .select([
-        'product.id as ID',
-        "pv.stock AS Quantity",
+        'pv.id as ID',
+        `product.id as ProductId`,
+        "pv.quantity AS Quantity",
         "product.name AS ProductName",
         "pv.price AS ProductPrice",
         "pc.value as Color",
+        'img.path as ImageURL',
         "pc.hex_value as HexColorCode",
         "pl.value as Label",
         "b.name  as Brand",
@@ -72,9 +75,11 @@ export class ProductService {
         .leftJoin("pv.color", "pc")
         .leftJoin("pv.label", "pl")
         
+        
         .select([
-          "p.id as Id",
-          "pv.stock as AvailableQuantity",
+          "pv.id as Id",
+        `p.id as ProductId`,
+          "pv.quantity as AvailableQuantity",
           "pv.price as Price",
           "p.name AS ProductName",
 

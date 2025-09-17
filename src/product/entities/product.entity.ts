@@ -33,18 +33,10 @@ export class Product {
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
-  @OneToMany(() => ProductLabel, (label) => label.product, { cascade: true })
-  labels: ProductLabel[];
-
-  @OneToMany(() => ProductColor, (color) => color.product, { cascade: true })
-  colors: ProductColor[];
-
   @OneToMany(() => ProductImage, (image) => image.product, { cascade: true })
   images: ProductImage[];
 
-  @OneToMany(() => OrdersItem, (orderItem) => orderItem.product)
-  orders_items: OrdersItem[];
-
+ 
   @OneToMany(() => ProductVariant, (variant) => variant.product)
   variants: ProductVariant[];
 }

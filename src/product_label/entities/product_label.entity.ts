@@ -12,13 +12,6 @@ export class ProductLabel {
     @Column()
     value: string;
 
-    @ManyToOne(() => Product, (product) => product.labels, { onDelete: "CASCADE" })
-    @JoinColumn({ name: 'product_id' })
-    product: Product;
-
-    @OneToMany(() => OrdersItem, (orderItem) => orderItem.label)
-    orders_items: OrdersItem[];
-
     @OneToMany(() => ProductVariant, (variant) => variant.label)
     variants: ProductVariant[];
 }

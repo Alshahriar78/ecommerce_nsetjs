@@ -27,7 +27,7 @@ export class ProductVariantService {
       price:createProductVariantDto.price,
       color:createProductVariantDto.color_id,
       product:createProductVariantDto.product_id,
-      stock:createProductVariantDto.stock,
+      quantity:createProductVariantDto.stock,
       label:createProductVariantDto.label_id
 
     })
@@ -63,7 +63,7 @@ export class ProductVariantService {
 
     const updateData = this.productVarientRepository.merge(data, {
       price:updateProductVariantDto.price,
-      stock:updateProductVariantDto.stock,
+      quantity:updateProductVariantDto.stock,
       product:updateProductVariantDto.product_id,
       color:updateProductVariantDto.color_id,
       label:updateProductVariantDto.label_id

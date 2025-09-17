@@ -40,8 +40,9 @@ export class UsersService {
             .leftJoin("user.role", "role")
             .leftJoin("user.orders", "order")
             .leftJoin("order.oreder_items", "items")
-            .leftJoin(`items.color`, 'color')
-            .leftJoin(`items.label`, 'label')
+            .leftJoin(`items.stock`, 'stocks')
+            .leftJoin(`stocks.color`, 'color')
+            .leftJoin(`stocks.label`, 'label')
             .select(
                 [
                     //users table
@@ -137,8 +138,9 @@ export class UsersService {
             .leftJoin("user.role", "role")
             .leftJoin("user.orders", "order")
             .leftJoin("order.oreder_items", "items")
-            .leftJoin(`items.color`, 'color')
-            .leftJoin(`items.label`, 'label')
+            .leftJoin(`items.stock`, 'stocks')
+            .leftJoin(`stocks.color`, 'color')
+            .leftJoin(`stocks.label`, 'label')
             .select(
                 [
                     // users table

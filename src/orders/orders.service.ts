@@ -29,17 +29,18 @@ export class OrdersService {
     @InjectRepository(ProductLabel)
     private readonly labelRepository: Repository<ProductLabel>,
     @InjectRepository(ProductVariant)
-    private readonly stockProduct : Repository<ProductVariant>
+    private readonly stockProduct: Repository<ProductVariant>
   ) { }
   async create(createOrderDto: CreateOrderDto) {
     // checking Product Stcok 
-    for(let i=0; i< createOrderDto.items.length;i++){
-       const product = await this.stockProduct.findOneByOrFail({ id: createOrderDto.items[i].product_varient_id })
-       
-       if(product.stock<createOrderDto.items[i].quantity){
-        return `Product Stock Available ${product.stock}` ;
-       }
-    }    
+    for (let i = 0; i < createOrderDto.items.length; i++) {
+      const productStock = await this.stockProduct.findOneByOrFail({ id: createOrderDto.items[i].product_varient_id })
+      console.log(productStock)
+      if (productStock.quantity < createOrderDto.items[i].quantity) {
+        return `Product Stock Available ${productStock.quantity}`;
+      }
+    }
+
     const user = await this.usersRepository.findOneByOrFail({ id: createOrderDto.userId })
     const order = this.orderRepository.create({
       userName: createOrderDto.userName,
@@ -53,21 +54,21 @@ export class OrdersService {
     const ordersaving = await this.orderRepository.save(order)
     let price = 0;
     for (let i = 0; i < createOrderDto.items.length; i++) {
-      const product = await this.productRepository.findOneByOrFail({ id: createOrderDto.items[i].product_varient_id })
-      // price += (product.price * createOrderDto.items[i].quantity);
+      const productStock = await this.stockProduct.findOneOrFail({
+        where: { id: createOrderDto.items[i].product_varient_id },
+        relations: ["product", 'color', 'label'],
+      });
+      price = price + (productStock.price * createOrderDto.items[i].quantity);
       const orderItem = this.orderItemRepository.create({
-        name: product.name,
+        name: productStock.product.name,
         quantity: createOrderDto.items[i].quantity,
-        // price: product.price * createOrderDto.items[i].quantity,
-        product: product,
-        order: order,
-        // color: productColor,
-        label: ProductLabel
+        price: productStock.price * createOrderDto.items[i].quantity,
+        order: ordersaving,
+        stock: productStock
       })
       await this.orderItemRepository.save(orderItem)
-      // update quantity after order placed
-      //  product.quantity -= createOrderDto.items[i].quantity;
-       await this.productRepository.save(product);
+      productStock.quantity -= createOrderDto.items[i].quantity;
+      await this.stockProduct.save(productStock);
     }
     const newOrder = this.orderRepository.create({
       total_price: price,
@@ -87,8 +88,9 @@ export class OrdersService {
       .createQueryBuilder('order')
       .leftJoin('order.user', 'user')
       .leftJoin('order.oreder_items', 'order_items')
-      .leftJoin(`order_items.color`, 'color')
-      .leftJoin(`order_items.label`, 'label')
+      .leftJoin(`order_items.stock`, 'stocks')
+      .leftJoin(`stocks.color`, 'color')
+      .leftJoin(`stocks.label`,'label')
       .select([
         `order.id as OrderId`,
         'order.userName as Name',
@@ -146,8 +148,9 @@ export class OrdersService {
       .createQueryBuilder('order')
       .leftJoin('order.user', 'user')
       .leftJoin('order.oreder_items', 'order_items')
-      .leftJoin(`order_items.color`, 'color')
-      .leftJoin(`order_items.label`, 'label')
+      .leftJoin(`order_items.stock`, 'stocks')
+      .leftJoin(`stocks.color`, 'color')
+      .leftJoin(`stocks.label`,'label')
       .select([
         `order.id as OrderId`,
         'order.userName as Name',

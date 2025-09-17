@@ -37,7 +37,7 @@ import { ProductVariant } from './product_variant/entities/product_variant.entit
     entities: [UsersRole, Users, Brand, Category, Product, ProductLabel, ProductColor, ProductImage, Order, OrdersItem,ProductVariant],
     synchronize: true,
     options: {
-      encrypt: false,
+      encrypt:false ,
       trustServerCertificate: true,
     }
   }), UsersRoleModule, UsersModule, BrandModule, CategoryModule, ProductModule, ProductLabelModule, ProductColorModule, ProductImageModule, OrdersModule, OrdersItemModule, AuthModule, ProductVariantModule],

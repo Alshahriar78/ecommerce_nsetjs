@@ -30,7 +30,7 @@ OrdersItem {
     @ManyToOne(() => Order, (order) => order.oreder_items, { onDelete: "CASCADE" })
     order: Order;
 
-    @ManyToOne(() => Product, (product) => product.orders_items)
+    @ManyToOne(() => ProductVariant, (stocks) => stocks.orders_items)
     @JoinColumn({ name: 'stock_id' })
     stock: ProductVariant;
 
@@ -38,4 +38,3 @@ OrdersItem {
 }
 
 
-// , { onDelete: 'CASCADE' }
