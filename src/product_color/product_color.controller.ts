@@ -13,7 +13,7 @@ export class ProductColorController {
   constructor(private readonly productColorService: ProductColorService) {}
 
   @UseGuards(AuthGuard,RolesGuard)
-  @Roles("ADMIN")
+  @Roles("Admin")
   @Post()
   async create(@Body() createProductColorDto: CreateProductColorDto) {
     return this.productColorService.create(createProductColorDto);

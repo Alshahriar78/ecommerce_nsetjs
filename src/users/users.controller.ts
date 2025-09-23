@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res, HttpStatus, Param, HttpException, Patch, Delete, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Res, HttpStatus, Param, HttpException, Patch, Delete, Query, UseGuards, ParseIntPipe } from "@nestjs/common";
 import { CreateUsersDto } from "./dto/create-users.dto";
 import { UsersService } from "./users.service";
 import type { Response } from "express";
@@ -16,12 +16,11 @@ export class UsersController {
 
     @Post()
     async createUser(@Body() createUsersDto: CreateUsersDto, @Res({ passthrough: true }) res: Response) {
-
         return await this.usersService.createUsers(createUsersDto)
     }
 
-    @UseGuards(AuthGuard,RolesGuard)
-    @Roles('ADMIN')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('Admin')
     @Get()
     async getAllUser(@Query() userSeachDto?: UserSearchDto) {
         return await this.usersService
@@ -31,15 +30,29 @@ export class UsersController {
             );
     }
 
-    
+
+
+
     @Get(':id')
     async getUserById(@Param('id') id: number) {
         return await this.usersService.getUsersById(id)
     }
 
+
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('Admin')
+    @Get('without/order')
+    async withOutOrder() {
+        const data = await this.usersService.usersWithoutOrder()
+        return data;
+    }
+
+
+
     @Patch(':id')
-    async updateUserById(@Param('id') id: number, @Body() updateUsersDto: UpdateUsersDto) {
-        const updateUserData = await this.usersService.updateUsersById(id, updateUsersDto)
+    async updateUserById(@Param('id',ParseIntPipe) id: number, @Body() updateUsersDto: UpdateUsersDto) {
+    const updateUserData = await this.usersService.updateUsersById(id, updateUsersDto);
+    return updateUserData;
     }
 
     @Delete(':id')
@@ -47,4 +60,6 @@ export class UsersController {
         const deleteUserData = await this.usersService.deleteUsersById(+id)
         return deleteUserData;
     }
+
+
 }

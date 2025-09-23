@@ -6,6 +6,8 @@ import { CreateUsersDto } from "./dto/create-users.dto";
 import { UpdateUsersDto } from "./dto/update-users.dto";
 import { UsersRole } from "src/users_role/entities/users_role.entity";
 import * as bcrypt from 'bcrypt'
+import { Order } from "src/orders/entities/order.entity";
+import { OrdersItem } from "src/orders_item/entities/orders_item.entity";
 
 @Injectable()
 export class UsersService {
@@ -15,20 +17,32 @@ export class UsersService {
         private readonly usersRepository: Repository<Users>,
         @InjectRepository(UsersRole)
         private readonly userRoleRepository: Repository<UsersRole>,
+        @InjectRepository(Order)
+        private readonly orderRepository: Repository<Order>,
     ) { }
 
     async createUsers(createUsersDto: CreateUsersDto) {
+
+
         const { role: roleEntity, password, ...userData } = createUsersDto;
         const saltRounds = 10;
         const pass = await bcrypt.hash(password, saltRounds);
-        const role = roleEntity
-            ? await this.userRoleRepository.findOne({ where: { id: roleEntity } })
-            : await this.userRoleRepository.findOne({ where: { id: 3 } });
+        const role = await this.userRoleRepository
+            .createQueryBuilder("role")
+            .where("role.id = :id", { id: roleEntity || 6 })
+            .select(["role.id AS id", "role.name name", "role.description AS description"])
+            .getRawOne();
+
+        console.log(role.id, role.name)
         if (!role) {
             throw new Error('Default role not found');
         }
         const createData = this.usersRepository.create({ ...userData, role, password: pass })
-        return await this.usersRepository.save(createData);
+        const data = await this.usersRepository.save(createData);
+        console.log(data)
+        const { id, email, name, phone, address } = data;
+
+        return { id, email, name, phone, address };
     }
 
     async getAllUsers(
@@ -129,7 +143,7 @@ export class UsersService {
     }
 
 
-    // User Get By User Id
+    // Get User Details  By User Id
     async getUsersById(id: number) {
 
 
@@ -218,23 +232,57 @@ export class UsersService {
 
 
     async updateUsersById(id: number, updateUsersDto: UpdateUsersDto) {
-        const findUsers: any = await this.getUsersById(id);
+        console.log(updateUsersDto, typeof id)
+        const findUsers = await this.usersRepository
+            .createQueryBuilder("u")
+            .where("u.id = :id", { id })
+            .getOne();
+        if (!findUsers) {
+            return `User not found`;
+        }
         const updateWithoutRoll = { ...updateUsersDto, role: findUsers.role }
         const updateData = this.usersRepository.merge(findUsers, updateWithoutRoll)
-        return await this.usersRepository.save(updateData);
+        const data = await this.usersRepository.save(updateData);
+        const { email, name, phone, address } = data;
+        return { email, name, phone, address };
+
     }
 
     async deleteUsersById(id: number) {
-        const deleteUser: any = await this.usersRepository.findBy({ id });
+        const deleteUser: any = await  this.usersRepository
+            .createQueryBuilder("u")
+            .where("u.id = :id", { id })
+            .getOne();
         if (!deleteUser) {
             throw new NotFoundException(`User with ID ${id} not found`);
         }
         await this.usersRepository.remove(deleteUser);
-        return deleteUser;
+         const { email, name, phone, address } = deleteUser;
+
+        return { id, email, name, phone, address };;
     }
 
     async findByEmail(email: string): Promise<Users | null> {
         const user = this.usersRepository.findOne({ where: { email: email } })
         return user;
     }
+
+    async usersWithoutOrder() {
+        const data = await this.usersRepository.createQueryBuilder('user')
+            .leftJoin('user.orders', 'order')
+            .select([
+                `user.name as Name`,
+                `user.email as Email`,
+                `user.phone as Phone`,
+                `user.address as Address`
+            ])
+            .where("order.id IS NULL")
+            .andWhere('user.roleId != :id', { id: 2 })
+            .getRawMany();
+
+        return data;
+    }
+
+
+
 }

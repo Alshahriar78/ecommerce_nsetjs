@@ -14,5 +14,6 @@ import { ProductVariantModule } from 'src/product_variant/product_variant.module
   imports:[TypeOrmModule.forFeature([Order]),UsersModule,ProductModule,OrdersItemModule,ProductColorModule,ProductLabelModule,ProductVariantModule],
   controllers: [OrdersController],
   providers: [OrdersService],
+  exports:[]
 })
 export class OrdersModule {}

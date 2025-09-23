@@ -10,7 +10,7 @@ import { retry } from 'rxjs';
 
 @Controller('category')
 @UseGuards(AuthGuard, RolesGuard)
-@Roles("ADMIN")
+@Roles("Admin")
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) { }
 

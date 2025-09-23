@@ -8,7 +8,7 @@ import { CategoryModule } from 'src/category/category.module';
 
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Product]),BrandModule,CategoryModule],
+  imports:[TypeOrmModule.forFeature([Product]),BrandModule,CategoryModule,],
   controllers: [ProductController],
   providers: [ProductService],
   exports:[ProductService,TypeOrmModule]

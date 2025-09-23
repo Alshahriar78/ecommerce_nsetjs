@@ -8,8 +8,4 @@ export class CreateProductColorDto {
 
     @IsString()
     hex_value: string;
-
-    @IsNotEmpty()
-    @IsNumber()
-    product: Product;
 }

@@ -10,7 +10,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('brand')
 @UseGuards(AuthGuard,RolesGuard)
-@Roles("ADMIN")
+@Roles("Admin")
 export class BrandController {
   constructor(private readonly brandService: BrandService) { }
 

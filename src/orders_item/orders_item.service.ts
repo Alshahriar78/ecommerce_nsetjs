@@ -24,6 +24,21 @@ export class OrdersItemService {
     return await this.orderIremRepository.find();
   }
 
+
+  async totalSalesOfEachProducts() {
+        const data = await this.orderIremRepository
+            .createQueryBuilder('oi')
+            .select('oi.name', 'name')
+            .addSelect('SUM(oi.quantity)', 'TotalSales')
+            .groupBy('oi.name')
+            .orderBy('TotalSales', 'DESC')
+            .getRawMany();
+      return data;
+        
+    }
+
+
+
   async findOne(id: number) {
     return await this.orderIremRepository.findOneBy({id});
   }

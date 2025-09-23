@@ -8,19 +8,22 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('orders-item')
 export class OrdersItemController {
-  constructor(private readonly ordersItemService: OrdersItemService) {}
+  constructor(private readonly ordersItemService: OrdersItemService) { }
 
-  // @UseGuards(AuthGuard,RolesGuard)
-  // @Roles('ADMIN','CUSTOMER')
-  // @Post()
-  // create() {
-  //   return this.ordersItemService.create(createOrdersItemDto);
-  // }
+  //creating order item through order
 
+  
   @Get()
   findAll() {
     return this.ordersItemService.findAll();
   }
+
+  @Get('total-sales-of-each-product')
+  async totalSalesOfEachProduct() {
+    const data = await this.ordersItemService.totalSalesOfEachProducts();
+    return data;
+  }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {

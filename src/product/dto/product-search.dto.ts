@@ -3,7 +3,7 @@ import { IsOptional, IsPositive, IsString, Min } from 'class-validator';
 
 
 
-export class ProductSeachDto {
+export class ProductSeachDto  {
  
   @IsOptional()
   @IsString()
@@ -14,10 +14,12 @@ export class ProductSeachDto {
   name: string;
 
   @IsOptional()
+  @Type(()=>Number)
   @Min(0)
   skip:number;
 
   @IsOptional()
+  @Type(()=>Number)
   limit: number;
 
 

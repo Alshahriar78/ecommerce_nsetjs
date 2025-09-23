@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -13,14 +13,12 @@ export class ProductController {
   constructor(private readonly productService: ProductService) { }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('Admin')
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
-    console.log(createProductDto)
     return await this.productService.create(createProductDto);
   }
 
-  @Public()
   @Get()
   async findAll(@Query() productSeachDto?: ProductSeachDto) {
     return await this.productService.findAll(
@@ -36,16 +34,19 @@ export class ProductController {
     return await this.productService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
       const data = this.productService.update(+id, updateProductDto);
       return data;
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @Delete(':id')
   async remove(@Param('id') id: string) {
       const data = this.productService.remove(+id);
       return data;
   }
-
 }

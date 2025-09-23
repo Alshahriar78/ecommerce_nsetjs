@@ -34,14 +34,20 @@ export class OrdersService {
   async create(createOrderDto: CreateOrderDto) {
     // checking Product Stcok 
     for (let i = 0; i < createOrderDto.items.length; i++) {
-      const productStock = await this.stockProduct.findOneByOrFail({ id: createOrderDto.items[i].product_varient_id })
-      console.log(productStock)
+      const productStock = await this.stockProduct
+        .createQueryBuilder("sp")
+        .where("sp.id = :id", { id: createOrderDto.items[i].product_varient_id })
+        .getOneOrFail();
       if (productStock.quantity < createOrderDto.items[i].quantity) {
         return `Product Stock Available ${productStock.quantity}`;
       }
     }
 
-    const user = await this.usersRepository.findOneByOrFail({ id: createOrderDto.userId })
+
+    const user = await this.usersRepository
+      .createQueryBuilder("u")
+      .where("u.id = :id", { id: createOrderDto.userId })
+      .getOneOrFail();
     const order = this.orderRepository.create({
       userName: createOrderDto.userName,
       phone: createOrderDto.phone,
@@ -51,13 +57,18 @@ export class OrdersService {
       user: user,
       total_price: 0
     })
+    
     const ordersaving = await this.orderRepository.save(order)
     let price = 0;
     for (let i = 0; i < createOrderDto.items.length; i++) {
-      const productStock = await this.stockProduct.findOneOrFail({
-        where: { id: createOrderDto.items[i].product_varient_id },
-        relations: ["product", 'color', 'label'],
-      });
+      const productStock = await this.stockProduct
+        .createQueryBuilder("sp")
+        .leftJoinAndSelect("sp.product", "p")
+        .leftJoinAndSelect("sp.color", "c")
+        .leftJoinAndSelect("sp.label", "l")
+        .where("sp.id = :id", { id: createOrderDto.items[i].product_varient_id })
+        .getOneOrFail();
+
       price = price + (productStock.price * createOrderDto.items[i].quantity);
       const orderItem = this.orderItemRepository.create({
         name: productStock.product.name,
@@ -73,12 +84,18 @@ export class OrdersService {
     const newOrder = this.orderRepository.create({
       total_price: price,
     })
-    const searchOrder = await this.orderRepository.findOneByOrFail({ id: ordersaving.id })
+    const searchOrder = await this.orderRepository
+      .createQueryBuilder("o")
+      .where("o.id = :id", { id: ordersaving.id })
+      .getOneOrFail();
+
     const data = this.orderRepository.merge(searchOrder, newOrder);
     const finalData = this.orderRepository.save(data)
 
     return finalData;
   }
+
+
 
 
   async findAll(paginationDto?: OrderSeachDto) {
@@ -90,7 +107,7 @@ export class OrdersService {
       .leftJoin('order.oreder_items', 'order_items')
       .leftJoin(`order_items.stock`, 'stocks')
       .leftJoin(`stocks.color`, 'color')
-      .leftJoin(`stocks.label`,'label')
+      .leftJoin(`stocks.label`, 'label')
       .select([
         `order.id as OrderId`,
         'order.userName as Name',
@@ -150,7 +167,7 @@ export class OrdersService {
       .leftJoin('order.oreder_items', 'order_items')
       .leftJoin(`order_items.stock`, 'stocks')
       .leftJoin(`stocks.color`, 'color')
-      .leftJoin(`stocks.label`,'label')
+      .leftJoin(`stocks.label`, 'label')
       .select([
         `order.id as OrderId`,
         'order.userName as Name',
@@ -211,5 +228,17 @@ export class OrdersService {
 
     await this.orderRepository.remove(order);
     return { message: 'Order deleted successfully' };
+  }
+
+  async getOrderByDisctricts() {
+    const data = await this.orderRepository
+      .createQueryBuilder('order')
+      .select('order.district', 'district')
+      .addSelect('COUNT(order.id)', 'total_orders')
+      .groupBy('order.district')
+      .orderBy('total_orders', 'DESC')
+      .getRawMany();
+
+    return data;
   }
 }

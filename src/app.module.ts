@@ -31,9 +31,9 @@ import { ProductVariant } from './product_variant/entities/product_variant.entit
     type: 'mssql',
     host: `localhost`,
     port: 1433,
-    username: 'sa',
-    password: 'alshahoriar123@',
-    database: 'ecommerce',
+    username: 'sourov',
+    password: 'sourov1234',
+    database: 'ecommerce2',
     entities: [UsersRole, Users, Brand, Category, Product, ProductLabel, ProductColor, ProductImage, Order, OrdersItem,ProductVariant],
     synchronize: true,
     options: {

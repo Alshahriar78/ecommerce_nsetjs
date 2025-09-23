@@ -6,7 +6,6 @@ export class CreateProductLabelDto {
   @IsString()
   value: string;
 
-  @IsNotEmpty()
-  product: Product;
+ 
 }
 

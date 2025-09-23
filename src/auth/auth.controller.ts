@@ -33,9 +33,10 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard,RolesGuard)
-  @Roles('ADMIN','CUSTOMER','EDITOR') 
+  @Roles('Admin','Customer','EDITOR') 
   @Get('profile')
   getProfile(@Request() req) {
+    console.log(req)
     return req.user;
   }
 }
