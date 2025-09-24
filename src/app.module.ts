@@ -25,15 +25,16 @@ import { OrdersItem } from './orders_item/entities/orders_item.entity';
 import { AuthModule } from './auth/auth.module';
 import { ProductVariantModule } from './product_variant/product_variant.module';
 import { ProductVariant } from './product_variant/entities/product_variant.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot({
+  imports: [ConfigModule.forRoot({isGlobal:true,envFilePath:'.env'}),TypeOrmModule.forRoot({
     type: 'mssql',
-    host: `localhost`,
-    port: 1433,
-    username: 'sourov',
-    password: 'sourov1234',
-    database: 'ecommerce2',
+    host:process.env.DB_HOST,
+    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 1433,
+    username: process.env.DB_USER,
+    password:process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     entities: [UsersRole, Users, Brand, Category, Product, ProductLabel, ProductColor, ProductImage, Order, OrdersItem,ProductVariant],
     synchronize: true,
     options: {
