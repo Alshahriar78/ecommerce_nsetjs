@@ -57,7 +57,7 @@ export class OrdersService {
       user: user,
       total_price: 0
     })
-    
+
     const ordersaving = await this.orderRepository.save(order)
     let price = 0;
     for (let i = 0; i < createOrderDto.items.length; i++) {
@@ -240,5 +240,18 @@ export class OrdersService {
       .getRawMany();
 
     return data;
+  }
+
+  async monthlyReports() {
+    const data = await this.orderRepository.query(`
+          SELECT 
+          CAST(YEAR(o.created_at) AS VARCHAR(4)) + '-' + RIGHT('0' + CAST(MONTH(o.created_at) AS VARCHAR(2)), 2) AS YearMonth,
+          COUNT(o.id) AS Total_Order,
+          SUM(o.total_price) AS Total_Price
+          FROM [ecommerce2].[dbo].[order] o
+          GROUP BY CAST(YEAR(o.created_at) AS VARCHAR(4)) + '-' + RIGHT('0' + CAST(MONTH(o.created_at) AS VARCHAR(2)), 2)
+          ORDER BY YearMonth;
+      `)
+    return data
   }
 }

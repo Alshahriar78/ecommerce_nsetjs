@@ -24,13 +24,6 @@ export class OrdersController {
     return this.ordersService.findAll(paginationDto);
   }
 
-  
-  @Get('order-by-district')
-  async getOrderByDistrict(){
-    const data = await this.ordersService.getOrderByDisctricts();
-    return data;
-  }
-
   @Get(':id')
   findOne(@Param('id') id: number,@Query() paginationDto?:OrderSeachDto) {
     return this.ordersService.findOne(id, paginationDto);
@@ -44,5 +37,21 @@ export class OrdersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.ordersService.remove(+id);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
+  @Get('total/order-by-district')
+  async getOrderByDistrict(){
+    const data = await this.ordersService.getOrderByDisctricts();
+    return data;
+  }
+
+  @UseGuards(AuthGuard,RolesGuard)
+  @Roles('Admin')
+  @Get('monthly/report')
+  async monthlyReport(){
+    const data = await this.ordersService.monthlyReports()
+    return data;
   }
 }
