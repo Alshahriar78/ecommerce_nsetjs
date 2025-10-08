@@ -36,7 +36,7 @@ async findAll(name?: string, limit?: number, skip?: number, brand?: string) {
     .leftJoin('pv.color', 'pc')
     .leftJoin('product.brand', 'b')
     .leftJoin('product.category', 'c')
-    .leftJoin('product.images', 'img')
+    // .leftJoin('product.images', 'img')
     .select([
       'pv.id as ID',
       'product.id as ProductId',
@@ -44,7 +44,7 @@ async findAll(name?: string, limit?: number, skip?: number, brand?: string) {
       'product.name AS ProductName',
       'pv.price AS ProductPrice',
       'pc.value as Color',
-      'img.path as ImageURL',
+      // 'img.path as ImageURL',
       'pc.hex_value as HexColorCode',
       'pl.value as Label',
       'b.name as Brand',

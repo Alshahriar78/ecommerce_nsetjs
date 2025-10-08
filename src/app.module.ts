@@ -26,6 +26,8 @@ import { AuthModule } from './auth/auth.module';
 import { ProductVariantModule } from './product_variant/product_variant.module';
 import { ProductVariant } from './product_variant/entities/product_variant.entity';
 import { ConfigModule } from '@nestjs/config';
+import { WishlistModule } from './wishlist/wishlist.module';
+import { Wishlist } from './wishlist/entities/wishlist.entity';
 
 @Module({
   imports: [ConfigModule.forRoot({isGlobal:true,envFilePath:'.env'}),TypeOrmModule.forRoot({
@@ -35,13 +37,13 @@ import { ConfigModule } from '@nestjs/config';
     username: process.env.DB_USER,
     password:process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [UsersRole, Users, Brand, Category, Product, ProductLabel, ProductColor, ProductImage, Order, OrdersItem,ProductVariant],
-    synchronize: true,
+    entities: [UsersRole, Users, Brand, Category, Product, ProductLabel, ProductColor, ProductImage, Order, OrdersItem,ProductVariant,Wishlist],
+    synchronize: false,
     options: {
       encrypt:false ,
       trustServerCertificate: true,
     }
-  }), UsersRoleModule, UsersModule, BrandModule, CategoryModule, ProductModule, ProductLabelModule, ProductColorModule, ProductImageModule, OrdersModule, OrdersItemModule, AuthModule, ProductVariantModule],
+  }), UsersRoleModule, UsersModule, BrandModule, CategoryModule, ProductModule, ProductLabelModule, ProductColorModule, ProductImageModule, OrdersModule, OrdersItemModule, AuthModule, ProductVariantModule, WishlistModule],
   controllers: [AppController],
   providers: [AppService],
 })

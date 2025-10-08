@@ -32,8 +32,6 @@ export class UsersService {
             .where("role.id = :id", { id: roleEntity || 6 })
             .select(["role.id AS id", "role.name name", "role.description AS description"])
             .getRawOne();
-
-        console.log(role.id, role.name)
         if (!role) {
             throw new Error('Default role not found');
         }

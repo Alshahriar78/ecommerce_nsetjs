@@ -3,6 +3,7 @@ import { Product } from 'src/product/entities/product.entity';
 import { ProductLabel } from 'src/product_label/entities/product_label.entity';
 import { ProductColor } from 'src/product_color/entities/product_color.entity';
 import { OrdersItem } from 'src/orders_item/entities/orders_item.entity';
+import { Wishlist } from 'src/wishlist/entities/wishlist.entity';
 
 @Entity('product_variant')
 export class ProductVariant {
@@ -32,4 +33,7 @@ export class ProductVariant {
 
     @OneToMany(()=>OrdersItem,(items)=>items.stock)
     orders_items:OrdersItem[];
+
+    @OneToMany(()=> Wishlist,(wishList)=>wishList.productVariant)
+    wishLists:Wishlist[];
 }

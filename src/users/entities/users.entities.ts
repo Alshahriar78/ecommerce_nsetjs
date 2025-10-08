@@ -1,5 +1,6 @@
 import { Order } from "src/orders/entities/order.entity";
 import { UsersRole } from "src/users_role/entities/users_role.entity";
+import { Wishlist } from "src/wishlist/entities/wishlist.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -38,5 +39,8 @@ export class Users {
 
     @OneToMany(()=>Order,(order)=>order.user )
     orders:Order[];
+
+    @OneToMany(()=>Wishlist,(wishList)=>wishList.user)
+    wishLists:Wishlist[];
 }
 
